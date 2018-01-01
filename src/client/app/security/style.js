@@ -23,9 +23,8 @@ let style = {
 
     raisedbox: {
         position: "absolute",
-        right: "150px",
+        right: "10%",
         top: "150px",
-        width: "20%",
         padding: "5px",
     }
 };
