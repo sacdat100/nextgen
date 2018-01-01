@@ -1,5 +1,4 @@
 import React from 'react';
-import {render} from 'react-dom';
 import Checkbox from 'material-ui/Checkbox';
 import Divider from 'material-ui/Divider';
 import Paper from 'material-ui/Paper';
@@ -8,6 +7,8 @@ import SelectField from 'material-ui/SelectField';
 import TextField from 'material-ui/TextField';
 import MenuItem from 'material-ui/MenuItem';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+
+import Footer from '../Footer';
 
 //import labels, messages and others which require multi langauge support.
 let i18 = require('./i18');
@@ -27,7 +28,7 @@ for (let i = 0; i < items.length; i++) {
 /**
  * Component responsible for Login Form
  */
-class LoginForm extends React.Component {
+export default class LoginForm extends React.Component {
 
     constructor(props){
         super(props);
@@ -52,7 +53,8 @@ class LoginForm extends React.Component {
             passwordValid: false,
             submitdisabled: true
         };
-        this.baseUIState = Object.assign({}, this.uiState);
+        this.baseUIState = {...this.uiState};
+        //this.baseUIState = Object.assign({}, this.uiState);
 
         //initialize based on remember me
         if(localStorage.getItem("remember")) {
@@ -163,6 +165,7 @@ class LoginForm extends React.Component {
                 <div style={style.back}>
                     <Paper zDepth={2} style={style.raisedbox}>
                       <span>
+                          Hello
                       <h3>{config.formlabels.greeting}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                           <SelectField
@@ -233,10 +236,10 @@ class LoginForm extends React.Component {
                             />
                         </form>
                     </Paper>
+                    <Footer/>
                 </div>
             </MuiThemeProvider>
         );
     }
 }
 
-render(<LoginForm/>, document.getElementById('app'));
