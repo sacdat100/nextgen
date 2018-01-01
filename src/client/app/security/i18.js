@@ -20,7 +20,7 @@ let i18 = {
         let lang = language;
         let selcontent = [];
         content.forEach(function (con) {
-                if (con.lang === lang) {
+                if (con.lang == lang) {
                     selcontent.push(con);
                 }
             });
