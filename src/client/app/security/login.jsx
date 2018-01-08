@@ -1,13 +1,10 @@
 import React from 'react';
-import Checkbox from 'material-ui/Checkbox';
-import Divider from 'material-ui/Divider';
-import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
-import SelectField from 'material-ui/SelectField';
-import TextField from 'material-ui/TextField';
-import MenuItem from 'material-ui/MenuItem';
+import {Checkbox, Divider, MenuItem, Paper, RaisedButton, SelectField, Subheader, TextField} from "material-ui";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
+let request = require('superagent');
+
+//import other components
 import Footer from '../Footer';
 
 //import labels, messages and others which require multi langauge support.
@@ -33,6 +30,8 @@ export default class LoginForm extends React.Component {
     constructor(props){
         super(props);
 
+        console.log("Start LoginForm");
+
         //store only real data here. Any interim UI state store uiState
         this.state = {
             groupID:"",
@@ -51,10 +50,14 @@ export default class LoginForm extends React.Component {
             groupIDValid: false,
             loginIDValid: false,
             passwordValid: false,
-            submitdisabled: true
+            submitdisabled: true,
+            submissionError: "",
+            password: ""
         };
+
+        this.encParam = {};
+
         this.baseUIState = {...this.uiState};
-        //this.baseUIState = Object.assign({}, this.uiState);
 
         //initialize based on remember me
         if(localStorage.getItem("remember")) {
@@ -64,12 +67,7 @@ export default class LoginForm extends React.Component {
             this.state.groupID = localStorage.getItem("groupID");
             this.state.loginID = localStorage.getItem("loginID");
             if(Number.isInteger(parseInt(localStorage.getItem("langPref")))) {
-                console.info("Before set langauge preference : " + this.state.langPref);
                 this.state.langPref = Number.parseInt(localStorage.getItem("langPref"));
-                console.info("After set langauge preference : " + this.state.langPref);
-            }
-            else{
-                console.info("????????????? " + Number.isInteger(localStorage.getItem("langPref")))
             }
             validator.validate("groupID", this.state.groupID, i18.getContent(this.state.langPref)[0], this.uiState);
             validator.validate("loginID", this.state.loginID, i18.getContent(this.state.langPref)[0], this.uiState);
@@ -80,8 +78,41 @@ export default class LoginForm extends React.Component {
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleReset = this.handleReset.bind(this);
+        this.componentWillMount = this.componentWillMount.bind(this);
 
     };
+
+    componentWillUpdate(newProps, newState) {
+        console.log("componentWillUpdate: Component is about to update!");
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        console.log("componentDidUpdate: Component just updated!");
+    }
+
+    componentWillMount(){
+        console.log("componentWillMount: Component is about to mount!");
+        console.info("fetch encryption parameter from server : ");
+
+        request
+            .post('http://localhost:3000/public/getEncParam')
+            .send({})
+            .set('X-API-Key', 'foobar')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .then((res) => {
+                this.encParam = JSON.parse(JSON.stringify(res.body));
+                console.log(this.encParam.rsa_exp + " " + this.encParam.rsa_mod + " " + this.encParam.randomNumber + " " + this.encParam.sessionId);
+            });
+    }
+
+    componentDidMount() {
+        console.log("componentDidMount: Component just mounted!");
+    }
+
+    componentWillUnmount() {
+        console.log("componentWillUnmount: Component is about to be removed from the DOM!");
+    }
 
     /**
      * Called by component with onChange event.
@@ -102,6 +133,11 @@ export default class LoginForm extends React.Component {
         }
     }
 
+    /**
+     * To handle Remember Me button logic.
+     * If click store the group id, login id, langauge in localstore else clear it from local store.
+     * @param flag
+     */
     setRememberMe(flag){
         if(flag){
             console.log("set the groupid, loginid and langauge in local store : ");
@@ -136,11 +172,29 @@ export default class LoginForm extends React.Component {
      * @param event
      */
     handleSubmit(event){
-      console.info("handleSubmit");
-      this.setRememberMe(this.state.remember);
-      event.preventDefault();
+        console.info("handleSubmit");
+        this.setRememberMe(this.state.remember);
+        event.preventDefault();
 
-      //todo : Ajax call to authenticate
+        var passwordValue = this.uiState.password;
+        this.setState( { 'password' :
+            _getRPIN(passwordValue, this.uiState.rsa_exp, this.uiState.rsa_mod, this.uiState.randomNumber, this.uiState.sessionId)}
+        );
+
+        //clear password field
+        this.uiState.password = "";
+
+        var reqStr = JSON.stringify(this.state);
+        console.info("send to server : " + reqStr);
+        request
+            .post('http://localhost:3000/public/login')
+            .send(reqStr)
+            .set('X-API-Key', 'foobar')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .then(function(res) {
+                alert('yay got ' + JSON.stringify(res.body));
+            });
     }
 
     /**
@@ -165,7 +219,6 @@ export default class LoginForm extends React.Component {
                 <div style={style.back}>
                     <Paper zDepth={2} style={style.raisedbox}>
                       <span>
-                          Hello
                       <h3>{config.formlabels.greeting}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                           <SelectField
@@ -205,7 +258,7 @@ export default class LoginForm extends React.Component {
                                 type="password"
                                 hintText={config.formlabels.password}
                                 floatingLabelText={config.formlabels.password}
-                                value={this.state.password}
+                                value={this.uiState.password}
                                 onChange={this.handleChange}
                                 errorText={this.uiState.passwordErrorMessage}
                                 maxLength="24"
@@ -222,7 +275,7 @@ export default class LoginForm extends React.Component {
                             <RaisedButton
                                 name="submit"
                                 label={config.formlabels.submit}
-                                primary="true"
+                                primary={true}
                                 style={style}
                                 disabled={this.uiState.submitdisabled}
                                 onClick={this.handleSubmit}
@@ -230,10 +283,11 @@ export default class LoginForm extends React.Component {
                             <RaisedButton
                                 name="reset"
                                 label={config.formlabels.cancel}
-                                secondary="true"
+                                secondary={true}
                                 style={style}
                                 onClick={this.handleReset}
                             />
+                            <Subheader>{this.uiState.submissionError}</Subheader>
                         </form>
                     </Paper>
                     <Footer/>

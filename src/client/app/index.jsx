@@ -25,7 +25,7 @@ const App = () => (
 
 ReactDOM.render((
     <MemoryRouter>
-        <App />
+        {<App />}
     </MemoryRouter>
 ), document.getElementById('app'));
 
