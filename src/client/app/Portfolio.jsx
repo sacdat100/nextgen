@@ -25,7 +25,7 @@ let chartData = {
  */
 const Portfolio = () => (
   <div>
-     <Bar data={chartData}/>
+     <Bar data={chartData} options={{'responsive' : 'false'}}/>
   </div>
 );
 

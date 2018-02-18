@@ -8,20 +8,11 @@ import {
   TableRowColumn,
 } from 'material-ui/Table';
 
-let style = {
-    tb: {
-      margin: 0,
-      padding: 0,
-      align: 'left',
-      border: 1
-    },
-}
-
 /**
  * A simple table demonstrating the hierarchy of the `Table` component and its sub-components.
  */
 const PendingTransactions = () => (
-  <Table multiSelectable={true} style={style.tb}>
+  <Table multiSelectable={true}>
     <TableHeader adjustForCheckbox={true}>
       <TableRow>
         <TableHeaderColumn width="40%">Type</TableHeaderColumn>

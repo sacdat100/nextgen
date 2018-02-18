@@ -9,15 +9,8 @@ import {
 } from 'material-ui/Table';
 
 let style = {
-    tb: {
-      margin: 0,
-      padding: 0,
-      align: 'left',
-      border: 1
-    },
-
     tinyfont: {
-      fontSize: "0.6em", 
+      fontSize: "0.6em",
       fontWeight: "bold",
     },
 }
@@ -26,33 +19,33 @@ let style = {
  * A simple table demonstrating the hierarchy of the `Table` component and its sub-components.
  */
 const AccountSummary = () => (
-  <Table selectable={false} style={style.tb}>
+  <Table selectable={false}>
     <TableHeader displaySelectAll={false} adjustForCheckbox={false} enableSelectAll={false}>
       <TableRow>
-        <TableHeaderColumn width="38%">Account</TableHeaderColumn>
-        <TableHeaderColumn width="15%">Currency</TableHeaderColumn>
-        <TableHeaderColumn width="@0%">Available Balance</TableHeaderColumn>
-        <TableHeaderColumn width="20%">Ledger Balance</TableHeaderColumn>
+        <TableHeaderColumn width="35%">Account</TableHeaderColumn>
+        <TableHeaderColumn width="13%">Currency</TableHeaderColumn>
+        <TableHeaderColumn width="25%">Available Balance</TableHeaderColumn>
+        <TableHeaderColumn width="*">Ledger Balance</TableHeaderColumn>
       </TableRow>
     </TableHeader>
     <TableBody displayRowCheckbox={false}>
       <TableRow>
-        <TableRowColumn width="38%">12135987675 <br/><span style={style.tinyfont}>General Expense Account</span></TableRowColumn>
-        <TableRowColumn width="15%">SGD</TableRowColumn>
-        <TableRowColumn width="20%">120,000.00</TableRowColumn>
-        <TableRowColumn width="20%">1200,00.00</TableRowColumn>
+        <TableRowColumn width="35%">12135987675 <br/><span style={style.tinyfont}>General Expense Account</span></TableRowColumn>
+        <TableRowColumn width="13%">SGD</TableRowColumn>
+        <TableRowColumn width="25%">120,000.00</TableRowColumn>
+        <TableRowColumn width="*">1200,00.00</TableRowColumn>
       </TableRow>
       <TableRow>
-        <TableRowColumn width="38%">12135981234 <br/><span style={style.tinyfont}>Travel Expense Account</span></TableRowColumn>
-        <TableRowColumn width="15%">USD</TableRowColumn>
-        <TableRowColumn width="20%">10,000.00</TableRowColumn>
-        <TableRowColumn width="20%">10,00.00</TableRowColumn>
+        <TableRowColumn width="35%">12135981234 <br/><span style={style.tinyfont}>Travel Expense Account</span></TableRowColumn>
+        <TableRowColumn width="13%">USD</TableRowColumn>
+        <TableRowColumn width="25%">10,000.00</TableRowColumn>
+        <TableRowColumn width="*">10,00.00</TableRowColumn>
       </TableRow>
       <TableRow>
-        <TableRowColumn width="38%">12135989999 <br/><span style={style.tinyfont}>Payroll Account</span></TableRowColumn>
-        <TableRowColumn width="15%">SGD</TableRowColumn>
-        <TableRowColumn width="20%">3,000,000.00</TableRowColumn>
-        <TableRowColumn width="20%">3,000,000.00</TableRowColumn>
+        <TableRowColumn width="35%">12135989999 <br/><span style={style.tinyfont}>Payroll Account</span></TableRowColumn>
+        <TableRowColumn width="13%">SGD</TableRowColumn>
+        <TableRowColumn width="25%">3,000,000.00</TableRowColumn>
+        <TableRowColumn width="*">3,000,000.00</TableRowColumn>
       </TableRow>
     </TableBody>
   </Table>

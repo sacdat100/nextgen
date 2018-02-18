@@ -1,5 +1,6 @@
 import React from 'react';
 import Subheader from 'material-ui/Subheader';
+
 import {
   Table,
   TableBody,
@@ -8,16 +9,6 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-
-let style = {
-    th: {
-      width: 100,
-      height: 10,
-      margin: 0,
-      padding: 0,
-      align: 'left',
-    },
-}
 
 /**
  * A simple table demonstrating the hierarchy of the `Table` component and its sub-components.
