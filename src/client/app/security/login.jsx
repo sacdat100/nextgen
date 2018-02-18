@@ -1,6 +1,8 @@
 import React from 'react';
 import {Checkbox, Divider, MenuItem, Paper, RaisedButton, SelectField, Subheader, TextField} from "material-ui";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import history from '../utils/history';
+import {_getRPIN} from './e2ee.js';
 
 let request = require('superagent');
 
@@ -37,6 +39,7 @@ export default class LoginForm extends React.Component {
             groupID:"",
             loginID: "",
             password: "",
+            encPassword: "",
             langPref: 0,
             remember: false
         };
@@ -52,7 +55,6 @@ export default class LoginForm extends React.Component {
             passwordValid: false,
             submitdisabled: true,
             submissionError: "",
-            password: ""
         };
 
         this.encParam = {};
@@ -176,13 +178,13 @@ export default class LoginForm extends React.Component {
         this.setRememberMe(this.state.remember);
         event.preventDefault();
 
-        var passwordValue = this.uiState.password;
-        this.setState( { 'password' :
-            _getRPIN(passwordValue, this.uiState.rsa_exp, this.uiState.rsa_mod, this.uiState.randomNumber, this.uiState.sessionId)}
-        );
-
-        //clear password field
-        this.uiState.password = "";
+        // var passwordValue = this.state.password;
+        // this.setState( { 'encPassword' :
+        //     _getRPIN(passwordValue, this.encParam.rsa_exp, this.encParam.rsa_mod, this.encParam.randomNumber, this.encParam.sessionId)}
+        // );
+        //
+        // //clear password field
+        // this.state.password = "";
 
         var reqStr = JSON.stringify(this.state);
         console.info("send to server : " + reqStr);
@@ -194,6 +196,11 @@ export default class LoginForm extends React.Component {
             .set('Content-Type', 'application/json')
             .then(function(res) {
                 alert('yay got ' + JSON.stringify(res.body));
+                var resObj = JSON.parse( JSON.stringify(res.body));
+                if(resObj.result == 'true'){
+                    sessionStorage.setItem('isAuthenticated', 'true');
+                    history.push('/1fa/home');
+                }
             });
     }
 
@@ -258,7 +265,7 @@ export default class LoginForm extends React.Component {
                                 type="password"
                                 hintText={config.formlabels.password}
                                 floatingLabelText={config.formlabels.password}
-                                value={this.uiState.password}
+                                value={this.state.password}
                                 onChange={this.handleChange}
                                 errorText={this.uiState.passwordErrorMessage}
                                 maxLength="24"

@@ -15,7 +15,15 @@ app.get('/', function(req, res){
 
 app.post('/public/login', function(req, res){
     console.log("In /public/login" + req.body);
-    res.send( {"greeting" : "Hello world"} );
+
+    var resData = {'result': 'false'};
+    var reqData = JSON.parse(JSON.stringify(req.body));
+    console.log(reqData.groupID + " > " + reqData.loginID + " > " + reqData.password);
+    if(reqData.loginID == "SACHIN"){
+        resData.result = 'true';
+    }
+    console.log(JSON.stringify(resData))
+    res.send( resData);
 });
 
 app.post('/public/getEncParam', function(req, res){
